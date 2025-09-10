@@ -15,10 +15,13 @@ export default function Question({ data, current, total, onAnswer }: Props) {
       </h2>
       {data.question && (
         <img
-          src={data.question}
-          alt="dog"
-          className="w-64 h-64 object-cover mx-auto rounded-xl mb-4"
-        />
+            src={data.question}
+            alt="dog"
+            className="w-48 h-48 object-cover rounded-lg shadow"
+            loading="lazy"
+            />
+
+
       )}
       <div className="grid grid-cols-2 gap-3">
         {data.options.map((option) => (

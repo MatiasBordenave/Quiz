@@ -12,4 +12,5 @@ export interface QuestionData {
   question: string; // en este caso la url de la foto
   answer: string;   // la raza correcta
   options: string[];
+  selectedAnswer?: string; // 👈 agregado
 }
