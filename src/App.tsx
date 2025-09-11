@@ -44,7 +44,7 @@ const App: React.FC = () => {
 
   const handleAnswer = (selected: string) => {
     const updated = [...questions];
-    updated[current].selectedAnswer = selected; // 👈 guardamos lo que eligió
+    updated[current].selectedAnswer = selected; 
     setQuestions(updated);
 
     if (selected === questions[current].answer) {
