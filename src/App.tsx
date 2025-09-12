@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { QuestionData, Dog } from "./types.ts";
 import Question from "./components/Question";
+import StartScreen from "./components/StartScreen";
+import ResultScreen from "./components/ResultScreen";
+
+import "./App.css";
 
 const App: React.FC = () => {
   const [questions, setQuestions] = useState<QuestionData[]>([]);
   const [current, setCurrent] = useState(0);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [started, setStarted] = useState(false);
 
   useEffect(() => {
+    if (!started) return; // 👈 Solo cargamos preguntas si el juego empezó
     const fetchDogs = async () => {
       const res = await fetch("https://api.thedogapi.com/v1/breeds");
       const data: Dog[] = await res.json();
@@ -40,11 +46,11 @@ const App: React.FC = () => {
     };
 
     fetchDogs();
-  }, []);
+  }, [started]);
 
   const handleAnswer = (selected: string) => {
     const updated = [...questions];
-    updated[current].selectedAnswer = selected; 
+    updated[current].selectedAnswer = selected;
     setQuestions(updated);
 
     if (selected === questions[current].answer) {
@@ -58,62 +64,52 @@ const App: React.FC = () => {
     }
   };
 
-  if (finished) {
+  if (!started) {
     return (
-      <div className="p-6 max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          ¡Juego terminado! 🎉
-        </h1>
-        <p className="text-lg mb-6 text-center">
-          Tu puntaje: {score} / {questions.length}
-        </p>
-
-        <div className="space-y-6">
-          {questions.map((q, index) => (
-            <div
-              key={index}
-              className="border rounded-xl p-4 shadow bg-white flex items-center gap-4"
-            >
-              <img
-                src={q.question}
-                alt="dog"
-                className="w-28 h-28 object-cover rounded-lg shadow"
-              />
-              <div>
-                <p className="font-semibold mb-1">
-                  Pregunta {index + 1}:
-                </p>
-                <p>
-                  Tu respuesta:{" "}
-                  <span
-                    className={
-                      q.selectedAnswer === q.answer
-                        ? "text-green-600 font-bold"
-                        : "text-red-600 font-bold"
-                    }
-                  >
-                    {q.selectedAnswer}
-                  </span>
-                </p>
-                {q.selectedAnswer !== q.answer && (
-                  <p>
-                    Correcta:{" "}
-                    <span className="text-green-600 font-bold">{q.answer}</span>
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className="app-container">
+        <StartScreen onStart={() => setStarted(true)} />
       </div>
     );
   }
 
+  if (finished) {
+    return (
+      <div className="app-container">
+        <ResultScreen
+          score={score}
+          total={questions.length}
+          questions={questions}
+          onRestart={() => {
+            setQuestions([]);
+            setCurrent(0);
+            setScore(0);
+            setFinished(false);
+            setStarted(false); // vuelve a la pantalla de inicio
+          }}
+        />
+      </div>
+    );
+  }
+
+
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      {questions.length > 0 && (
-        <Question data={questions[current]} onAnswer={handleAnswer} />
-      )}
+    <div className="app-container">
+      <div className="main-card">
+        {questions.length > 0 ? (
+          <Question
+            data={questions[current]}
+            onAnswer={handleAnswer}
+            current={current}
+            total={questions.length}
+          />
+        ) : (
+          <div className="loading-card">
+            <div className="spinner"></div>
+            <h2 className="loading-text">Cargando preguntas...</h2>
+            <p className="loading-subtext">Preparando tu quiz de perros 🐕</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
