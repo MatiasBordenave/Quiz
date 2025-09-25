@@ -21,7 +21,7 @@ export default function Question({ data, current, total, onAnswer }: Props) {
       {data.question ? (
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6 mx-auto max-w-sm">
           <div className="w-48 h-48 mx-auto bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden relative">
-            {/* skeleton overlay */}
+            
             {!loaded && (
               <div className="absolute inset-0 flex items-center justify-center" style={{ background: "#f3f4f6" }}>
                 <div className="animate-pulse w-28 h-8 rounded bg-gray-300"></div>
@@ -39,7 +39,6 @@ export default function Question({ data, current, total, onAnswer }: Props) {
                 (e.currentTarget as HTMLImageElement).src = FALLBACK;
                 setLoaded(true);
               }}
-              // usamos opacity para evitar problemas con display:none
               style={{
                 width: "192px",
                 height: "192px",
