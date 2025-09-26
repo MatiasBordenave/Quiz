@@ -11,56 +11,66 @@ export default function ResultScreen({ score, total, questions, onRestart }: Pro
   const percent = total > 0 ? Math.round((score / total) * 100) : 0;
   const performanceColor =
     percent >= 80 ? "text-green-600" : percent >= 50 ? "text-yellow-600" : "text-red-600";
-  const barColor = percent >= 80 ? "bg-green-500" : percent >= 50 ? "bg-yellow-500" : "bg-red-500";
+  const barColor =
+    percent >= 80 ? "bg-green-500" : percent >= 50 ? "bg-yellow-500" : "bg-red-500";
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 max-w-xl w-full result-card">
-      <h2 className="text-2xl font-bold mb-4 text-center">Resultados</h2>
+    <div className="result-card max-w-3xl w-full">
+      {/* Título */}
+      <h2 className="title mb-6">Resultados</h2>
 
-      <div className="mb-6 text-center">
-        <span className={`text-3xl font-extrabold ${performanceColor}`}>{percent}%</span>
-        <p className="text-gray-500">{score} de {total} correctas</p>
-        <div className="w-full bg-gray-200 rounded-full h-2 mt-3 overflow-hidden">
-          <div className={`${barColor} h-2 rounded-full`} style={{ width: `${percent}%` }} />
+      {/* Porcentaje y barra */}
+      <div className="mb-10 text-center">
+        <span className={`text-4xl font-extrabold ${performanceColor}`}>{percent}%</span>
+        <p className="text-gray-600">{score} de {total} correctas</p>
+        <div className="w-full bg-gray-200 rounded-full h-3 mt-4 overflow-hidden">
+          <div
+            className={`${barColor} h-3 rounded-full transition-all`}
+            style={{ width: `${percent}%` }}
+          />
         </div>
       </div>
 
-      <div className="space-y-2 mb-6">
+      {/* Lista de respuestas */}
+      <div className="grid gap-5">
         {questions.map((q, index) => {
           const isCorrect = q.selectedAnswer === q.answer;
+
           return (
             <div
               key={index}
-              className="flex items-center gap-3 p-3 rounded-lg bg-white border shadow-sm"
+              className={`flex items-center gap-6 p-4 rounded-2xl shadow-md border transition ${
+                isCorrect
+                  ? "bg-green-100 border-green-300 hover:shadow-lg"
+                  : "bg-red-100 border-red-300 hover:shadow-lg"
+              }`}
             >
-              <div
-                className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold text-white ${
-                  isCorrect ? 'bg-green-500' : 'bg-red-500'
-                }`}
-              >
-                {isCorrect ? '✔' : '✖'}
-              </div>
-              <div className="w-10 h-10 rounded-md border bg-gray-50 flex items-center justify-center overflow-hidden">
+              {/* Imagen */}
+              <div className="w-24 h-24 rounded-xl border bg-white flex items-center justify-center overflow-hidden shadow">
                 <img
                   src={q.question}
                   alt="Imagen de la pregunta"
-                  className="w-full h-full object-contain"
-                  loading="eager"
-                  decoding="sync"
-                  fetchPriority="high"
+                  className="w-full h-full object-cover"
                 />
               </div>
-              <div className="flex-1 text-sm">
+
+              {/* Texto */}
+              <div className="flex-1 text-left">
                 <p className="font-medium text-gray-800">Pregunta {index + 1}</p>
                 <p className="text-gray-700">
-                  Tu respuesta: {" "}
-                  <span className={`font-semibold ${isCorrect ? "text-green-700" : "text-red-700"}`}>
+                  Tu respuesta:{" "}
+                  <span
+                    className={`font-semibold ${
+                      isCorrect ? "text-green-700" : "text-red-700"
+                    }`}
+                  >
                     {q.selectedAnswer || "No contestada"}
                   </span>
                 </p>
                 {!isCorrect && (
                   <p className="text-gray-700">
-                    Correcta: <span className="font-semibold text-green-700">{q.answer}</span>
+                    Correcta:{" "}
+                    <span className="font-semibold text-green-700">{q.answer}</span>
                   </p>
                 )}
               </div>
@@ -69,10 +79,11 @@ export default function ResultScreen({ score, total, questions, onRestart }: Pro
         })}
       </div>
 
-      <div className="text-center">
+      {/* Botón */}
+      <div className="text-center mt-10">
         <button
           onClick={onRestart}
-          className="bg-gray-900 text-white px-6 py-2 rounded-xl hover:bg-black"
+          className="bg-gray-900 text-white px-8 py-3 rounded-2xl hover:bg-black shadow-md hover:shadow-lg transition"
         >
           Jugar de nuevo
         </button>

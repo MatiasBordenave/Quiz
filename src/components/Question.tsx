@@ -28,25 +28,25 @@ export default function Question({ data, current, total, onAnswer }: Props) {
               </div>
             )}
 
-            <img
-              src={data.question}
-              alt={`Imagen de ${data.answer}`}
-              loading="lazy"
-              decoding="async"
-              onLoad={() => setLoaded(true)}
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).onerror = null;
-                (e.currentTarget as HTMLImageElement).src = FALLBACK;
-                setLoaded(true);
-              }}
-              style={{
-                width: "192px",
-                height: "192px",
-                objectFit: "contain",
-                opacity: loaded ? 1 : 0,
-                transition: "opacity 300ms ease-in-out",
-              }}
-            />
+            <img src={data.question}
+                alt={`Imagen de ${data.answer}`}
+                loading="lazy"
+                decoding="async"
+                onLoad={() => setLoaded(true)}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = FALLBACK;
+                  setLoaded(true);
+                }}
+                className={`transition-opacity duration-300 ${
+                  loaded ? "opacity-100" : "opacity-0"
+                }`}
+                style={{
+                  width: "192px",
+                  height: "192px",
+                  objectFit: "contain",
+                }}
+              />
+
           </div>
         </div>
       ) : (

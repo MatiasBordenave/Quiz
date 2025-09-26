@@ -21,64 +21,47 @@ const App: React.FC = () => {
     if (!started) return;
 
     let mounted = true;
-    const fetchDogs = async () => {
-      setLoading(true);
-      setError(null);
+    
+   const fetchDogs = async () => {
+  try {
+    const res = await fetch("https://api.thedogapi.com/v1/breeds", {
+      headers: {
+        "x-api-key": "live_FAJItsuYev8Qj2vZUUmJLAPyDrzgVZQh0zcmkFChWXgt3EXzJAYv7Qfp4sS6bP87",
+      },
+    });
 
-      try {
-        const limit = 50; // traemos suficiente para tener variedad
-        const res = await fetch(
-          `https://api.thedogapi.com/v1/images/search?limit=${limit}&include_breeds=1`,
-        );
-        if (!res.ok) throw new Error(`API error: ${res.status}`);
-        const data: any[] = await res.json();
+    if (!res.ok) throw new Error("Error al consultar la API");
+    const data = await res.json();
 
-        const pairs = data
-          .map((i) => ({
-            breed: i.breeds?.[0]?.name,
-            url: i.url,
-          }))
-          .filter((p) => p.breed && p.url);
+    // quedarnos solo con razas que tengan imagen
+    const withImages = data.filter((dog: any) => dog.image?.url);
 
-        const map = new Map<string, string>();
-        pairs.forEach((p) => {
-          if (!map.has(p.breed)) map.set(p.breed, p.url);
-        });
+    // mezclar y tomar 10 (por ejemplo)
+    const selected = withImages.sort(() => Math.random() - 0.5).slice(0, 5);
 
-        const unique = Array.from(map.entries()).map(([breed, url]) => ({ breed, url }));
+    const questions = selected.map((dog: any) => {
+      // opciones incorrectas
+      const wrongOptions = withImages
+        .filter((d: any) => d.id !== dog.id)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3)
+        .map((d: any) => d.name);
 
-        if (unique.length < 5) {
-          throw new Error("No se encontraron suficientes razas con imagen en la API.");
-        }
+      return {
+        question: dog.image.url,
+        answer: dog.name,
+        options: [...wrongOptions, dog.name].sort(() => Math.random() - 0.5),
+      };
+    });
 
-        const selected = shuffle(unique).slice(0, 5);
+    setQuestions(questions);
+  } catch (error) {
+    console.error("Error cargando razas:", error);
+  }
+};
 
-        const allBreeds = unique.map((u) => u.breed);
 
-        const formatted: QuestionData[] = selected.map((s) => {
-          const optionsSet = new Set<string>([s.breed]);
-          while (optionsSet.size < 4) {
-            const random = allBreeds[Math.floor(Math.random() * allBreeds.length)];
-            optionsSet.add(random);
-          }
-          return {
-            question: s.url,
-            answer: s.breed,
-            options: shuffle(Array.from(optionsSet)),
-          } as QuestionData;
-        });
 
-        if (!mounted) return;
-        console.log("Preguntas generadas:", formatted);
-        setQuestions(formatted);
-      } catch (err: any) {
-        console.error("Error cargando imágenes:", err);
-        setError(err.message || "Error al cargar");
-        setQuestions([]);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
 
     fetchDogs();
 
