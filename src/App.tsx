@@ -33,14 +33,11 @@ const App: React.FC = () => {
     if (!res.ok) throw new Error("Error al consultar la API");
     const data = await res.json();
 
-    // quedarnos solo con razas que tengan imagen
     const withImages = data.filter((dog: any) => dog.image?.url);
 
-    // mezclar y tomar 10 (por ejemplo)
     const selected = withImages.sort(() => Math.random() - 0.5).slice(0, 5);
 
     const questions = selected.map((dog: any) => {
-      // opciones incorrectas
       const wrongOptions = withImages
         .filter((d: any) => d.id !== dog.id)
         .sort(() => Math.random() - 0.5)
