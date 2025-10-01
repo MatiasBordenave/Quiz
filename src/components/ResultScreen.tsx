@@ -16,10 +16,8 @@ export default function ResultScreen({ score, total, questions, onRestart }: Pro
 
   return (
     <div className="result-card max-w-3xl w-full">
-      {/* Título */}
       <h2 className="title mb-6">Resultados</h2>
 
-      {/* Porcentaje y barra */}
       <div className="mb-10 text-center">
         <span className={`text-4xl font-extrabold ${performanceColor}`}>{percent}%</span>
         <p className="text-gray-600">{score} de {total} correctas</p>
@@ -31,7 +29,6 @@ export default function ResultScreen({ score, total, questions, onRestart }: Pro
         </div>
       </div>
 
-      {/* Lista de respuestas */}
       <div className="grid gap-5">
         {questions.map((q, index) => {
           const isCorrect = q.selectedAnswer === q.answer;
@@ -45,7 +42,6 @@ export default function ResultScreen({ score, total, questions, onRestart }: Pro
                   : "bg-red-100 border-red-300 hover:shadow-lg"
               }`}
             >
-              {/* Imagen */}
               <div className="w-24 h-24 rounded-xl border bg-white flex items-center justify-center overflow-hidden shadow">
                 <img
                   src={q.question}
@@ -54,7 +50,6 @@ export default function ResultScreen({ score, total, questions, onRestart }: Pro
                 />
               </div>
 
-              {/* Texto */}
               <div className="flex-1 text-left">
                 <p className="font-medium text-gray-800">Pregunta {index + 1}</p>
                 <p className="text-gray-700">
@@ -79,7 +74,6 @@ export default function ResultScreen({ score, total, questions, onRestart }: Pro
         })}
       </div>
 
-      {/* Botón */}
       <div className="text-center mt-10">
         <button
           onClick={onRestart}
