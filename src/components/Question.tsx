@@ -17,7 +17,7 @@ export default function Question({ data, current, total, onAnswer }: Props) {
       <h2 className="mb-6 text-xl font-bold text-gray-800">
         Pregunta {current + 1} de {total}
       </h2>
-
+      {/* Pregutas */}
       {data.question ? (
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6 mx-auto max-w-sm">
           <div className="w-48 h-48 mx-auto bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden relative">
